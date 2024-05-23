@@ -2,12 +2,12 @@
 #include <iostream>
 #include <random>
 #include"glut.h"
-const int MINE = 25;
+const int MINE = 9;
 const int TILE_SIZE = 22;//pазмер одной плитки в пикселях.
 const int MARGIN = 40;//oтступ от края окна до игрового поля
 const int PADDING = 10;//oтступ между плитками
 const int BOARD_SIZE = 11;
-const int MINE_COUNT = 7;
+const int MINE_COUNT = 25;
 enum Color {
     RED, DARKRED, BLUE, DARKBLUE, GREEN, DARKGREEN, CYAN, DARKCYAN, YELLOW, DARKYELLOW, WHITE, MAGENTA, BLACK, DARKGRAY, LIGHTGRAY, ULTRALIGHTGRAY
 };
