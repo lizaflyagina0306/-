@@ -319,3 +319,213 @@ bool gameOver()
 {
     return death != -1;
 }
+//Проверяет, является ли ячейка с координатами (x, y) той ячейкой, которая привела к поражению
+bool isDead(int x, int y)
+{
+    return death == index(x, y);
+}
+//Проверяет, выиграл ли игрок
+bool hasWon()
+{
+    return num_opened == MINE_COUNT;
+}
+
+void openMines(bool open = true)
+{
+    for (int y = 0; y < BOARD_SIZE; y++) {
+        for (int x = 0; x < BOARD_SIZE; x++) {
+            if (isMine(x, y))
+                board[index(x, y)].open = open;
+        }
+    }
+}
+
+void openCell(int x, int y)
+{
+    if (x < 0 || y < 0 || y > BOARD_SIZE - 1 || x > BOARD_SIZE - 1)
+        return;
+    if (isOpen(x, y))
+        return;
+    num_opened--;
+    board[index(x, y)].open = true;
+    if (isMine(x, y))
+    {
+        death = index(x, y);
+        openMines();
+        return;
+    }
+    //пустая ячейка
+    if (getType(x, y) == 0)
+    {
+        openCell(x - 1, y + 1);
+        openCell(x, y + 1);
+        openCell(x + 1, y + 1);
+        openCell(x - 1, y);
+        openCell(x + 1, y);
+        openCell(x - 1, y - 1);
+        openCell(x, y - 1);
+        openCell(x + 1, y - 1);
+    }
+}
+
+void toggleFlag(int x, int y)
+{
+    board[index(x, y)].flag = !isFlag(x, y);
+}
+//Рисует открытую ячейку с количеством соседних мин n. 
+// Если игрок проиграл, то ячейка, приведшая к поражению, рисуется особой.
+void drawOpen(int x, int y, int n, bool dead)
+{
+    switch (n) {
+    case 0:
+        drawOpenDim(x, y);
+        break;
+    case 9:
+        if (!dead) {
+            drawOpenDim(x, y);
+        }
+        drawMine(x, y, dead);
+        break;
+    default:
+        drawOpenDim(x, y);
+        drawNum(x, y, n);
+    }
+}
+//Рисует закрытую ячейку.
+void drawClosed(int x, int y)
+{
+    drawClosedDim(x, y);
+    if (isFlag(x, y))
+        drawFlag(x, y);
+}
+
+void draw()
+{
+    for (int y = 0; y < BOARD_SIZE; y++)
+    {
+        for (int x = 0; x < BOARD_SIZE; x++)
+        {
+            if (isOpen(x, y))
+                drawOpen(x, y, getType(x, y), isDead(x, y));
+            else
+                drawClosed(x, y);
+        }
+    }
+}
+//Проверяет, нажал ли игрок на кнопку перезапуска
+bool requestRestart(int x, int y)
+{
+    return (x >= 5 && x <= 7 && y >= 12 && y <= 14);
+}
+
+void init()
+{
+    for (int i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
+        board[i].type = 0;
+        board[i].flag = false;
+        board[i].open = false;
+    }
+    for (int i = 0; i < MINE_COUNT; i++)
+    {
+        bool tmp = true;
+        do
+        {
+            int x = rand_int(0, BOARD_SIZE - 1);
+            int y = rand_int(0, BOARD_SIZE - 1);
+            if (!isMine(x, y))
+            {
+                tmp = false;
+                setType(x, y, MINE);
+            }
+        } while (tmp);
+    }
+    for (int y = 0; y < BOARD_SIZE; y++) {
+        for (int x = 0; x < BOARD_SIZE; x++) {
+            if (!isMine(x, y)) {
+                setType(x, y, calcMine(x, y));
+            }
+        }
+    }
+    death = -1;
+    clicked = true;
+    num_opened = BOARD_SIZE * BOARD_SIZE;
+    glClearColor(0.8f, 0.8f, 0.8f, 1.f);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, WIDTH, 0, HEIGHT, -1.f, 1.f);
+    glPointSize(5.0);
+    glEnable(GL_LINE_SMOOTH);
+    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    glEnable(GL_POINT_SMOOTH);
+    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+// базовая функция для экрана используя глут
+void display()
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+    drawLowerFrame();
+    drawUpperFrame();
+    drawIcon();
+    draw();
+
+    glutSwapBuffers();
+}
+void key(unsigned char key, int x, int y)
+{
+    switch (key) {
+    case 27: exit(0); break;
+    }
+    //glutPostRedisplay();
+}
+void mouse(int b, int s, int x, int y)
+{
+    x = (x + PADDING) / TILE_SIZE - 1;
+    y = (HEIGHT - y + PADDING) / TILE_SIZE - 1;
+
+    switch (b)
+    {
+    case GLUT_LEFT_BUTTON:
+        if (s == GLUT_DOWN)
+        {
+            if (requestRestart(x, y))
+            {
+                init();
+            }
+            else if (!gameOver() && !hasWon()) {
+                openCell(x, y);
+            }
+        }
+        break;
+    case GLUT_RIGHT_BUTTON:
+        if (s == GLUT_DOWN)
+        {
+            if (gameOver() || hasWon()) {
+                break;
+            }
+            toggleFlag(x, y);
+        }
+        break;
+    }
+
+}
+
+int main(int argc, char** argv)
+{
+    WIDTH = (BOARD_SIZE * TILE_SIZE + 2 * PADDING);
+    HEIGHT = (BOARD_SIZE * TILE_SIZE + 2 * PADDING + 2 * MARGIN);
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_MULTISAMPLE);
+    glutInitWindowSize(WIDTH, HEIGHT);
+    glutInitWindowPosition((glutGet(GLUT_SCREEN_WIDTH) - WIDTH) / 2, (glutGet(GLUT_SCREEN_HEIGHT) - HEIGHT) / 2);
+    glutCreateWindow("MiNeSwEePeR");
+    glutIdleFunc(display);
+    glutDisplayFunc(display);
+    glutKeyboardFunc(key);
+    glutMouseFunc(mouse);
+    init();
+    glutMainLoop();
+    return 0;
+}
