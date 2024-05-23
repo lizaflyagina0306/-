@@ -148,38 +148,15 @@ void drawMine(int x, int y, bool dead)
     glEnd();
     drawRect(x + 3, y + 5, 2, 2, WHITE, false);
 }
+//рисование цифр в клеточках
 void drawNum(int x, int y, int v)
 {
-    switch (v)
-    {
-    case 1:
-        glColor3f(colors[BLUE].r, colors[BLUE].g, colors[BLUE].b);
-        break;
-    case 2:
-        glColor3f(colors[GREEN].r, colors[GREEN].g, colors[GREEN].b);
-        break;
-    case 3:
-        glColor3f(colors[RED].r, colors[RED].g, colors[RED].b);
-        break;
-    case 4:
-        glColor3f(colors[DARKBLUE].r, colors[DARKBLUE].g, colors[DARKBLUE].b);
-        break;
-    case 5:
-        glColor3f(colors[DARKRED].r, colors[DARKRED].g, colors[DARKRED].b);
-        break;
-    case 6:
-        glColor3f(colors[DARKYELLOW].r, colors[DARKYELLOW].g, colors[DARKYELLOW].b);
-        break;
-    case 7:
-        glColor3f(colors[CYAN].r, colors[CYAN].g, colors[CYAN].b);
-        break;
-    case 8:
-        glColor3f(colors[DARKCYAN].r, colors[DARKCYAN].g, colors[DARKCYAN].b);
-        break;
-    }
+
+    glColor3f(colors[v].r, colors[v].g, colors[v].b);
     glRasterPos2i((x + 0) * TILE_SIZE + PADDING + 6, (y + 0) * TILE_SIZE + PADDING + 5);
     glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '0' + v);
 }
+
 //отрисовка рамки
 void drawFrame(float x, float y, float WIDTH, float HEIGHT, bool doubleFrame = true)
 {
