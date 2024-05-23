@@ -209,3 +209,62 @@ void drawFrame(float x, float y, float WIDTH, float HEIGHT, bool doubleFrame = t
     }
     glEnd();
 }
+//закрытая ячейка
+void drawClosedDim(int x, int y)
+{
+    drawFrame(x * TILE_SIZE + PADDING, y * TILE_SIZE + PADDING, TILE_SIZE, TILE_SIZE, false);
+}
+//Рисует открытую ячейку без числа или символа
+void drawOpenDim(int x, int y)
+{
+    drawRect(x * TILE_SIZE + PADDING, y * TILE_SIZE + PADDING, TILE_SIZE, TILE_SIZE);
+}
+//Рисует верхнюю рамку игрового поля
+void drawUpperFrame(int x = 0, int y = 0)
+{
+    const float upper_frame_outter_WIDTH = WIDTH;
+    const float upper_frame_outter_HEIGHT = 2 * MARGIN;
+    const float offset = HEIGHT - upper_frame_outter_HEIGHT;
+
+    drawFrame(0, offset, upper_frame_outter_WIDTH, upper_frame_outter_HEIGHT);
+}
+//Рисует нижнюю рамку игрового поля
+void drawLowerFrame(int x = 0, int y = 0)
+{
+    const float lower_frame_outter_size = WIDTH;
+    drawFrame(0, 0, lower_frame_outter_size, lower_frame_outter_size);
+}
+//Рисует смайлик над полем
+void drawIcon(int x = 0, int y = 0)
+{
+    const float icon_size = 2 * TILE_SIZE;
+    if (clicked)
+    {
+        int x = 0, y = 0;
+        const float cx = (WIDTH - icon_size) / 2.0f;
+        const float cy = (HEIGHT - MARGIN) - icon_size / 2.0f;
+        drawRect(cx, cy, 2 * TILE_SIZE, 2 * TILE_SIZE, ULTRALIGHTGRAY, false);
+    }
+    drawFrame((WIDTH - icon_size) / 2.0f, (HEIGHT - MARGIN) - icon_size / 2.0f, icon_size, icon_size, false);
+
+    const float cx = WIDTH / 2.0f;
+    const float cy = (HEIGHT - MARGIN);
+
+    // face
+    drawCircle(x + cx, y + cy, TILE_SIZE * 0.707f, GREEN, false);
+    drawCircle(x + cx, y + cy, TILE_SIZE * 0.707f, BLACK);
+
+    // eyes
+    glBegin(GL_POINTS);
+    glVertex2f(-4.707 + cx, 1.707 + cy);
+    glVertex2f(4.707 + cx, 1.707 + cy);
+    glEnd();
+
+    // mouth
+    glBegin(GL_LINES);
+    {
+        glVertex2f(-3.707 + cx, -8.707 + cy);
+        glVertex2f(3.707 + cx, -8.707 + cy);
+    }
+    glEnd();
+}
