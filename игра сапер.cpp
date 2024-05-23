@@ -310,3 +310,12 @@ int calcMine(int x, int y)
         + isMine(x, y + 1)
         + isMine(x + 1, y + 1);
 }
+bool isFlag(int x, int y)
+{
+    return board[index(x, y)].flag;
+}
+
+bool gameOver()
+{
+    return death != -1;
+}
