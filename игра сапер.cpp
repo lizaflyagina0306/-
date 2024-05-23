@@ -2,7 +2,7 @@
 #include <iostream>
 #include <random>
 #include"glut.h"
-const int MINE = 9;
+const int MINE = 25;
 const int TILE_SIZE = 22;//pазмер одной плитки в пикселях.
 const int MARGIN = 40;//oтступ от края окна до игрового поля
 const int PADDING = 10;//oтступ между плитками
