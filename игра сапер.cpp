@@ -148,3 +148,87 @@ void drawMine(int x, int y, bool dead)
     glEnd();
     drawRect(x + 3, y + 5, 2, 2, WHITE, false);
 }
+void drawNum(int x, int y, int v)
+{
+    switch (v)
+    {
+    case 1:
+        glColor3f(colors[BLUE].r, colors[BLUE].g, colors[BLUE].b);
+        break;
+    case 2:
+        glColor3f(colors[GREEN].r, colors[GREEN].g, colors[GREEN].b);
+        break;
+    case 3:
+        glColor3f(colors[RED].r, colors[RED].g, colors[RED].b);
+        break;
+    case 4:
+        glColor3f(colors[DARKBLUE].r, colors[DARKBLUE].g, colors[DARKBLUE].b);
+        break;
+    case 5:
+        glColor3f(colors[DARKRED].r, colors[DARKRED].g, colors[DARKRED].b);
+        break;
+    case 6:
+        glColor3f(colors[DARKYELLOW].r, colors[DARKYELLOW].g, colors[DARKYELLOW].b);
+        break;
+    case 7:
+        glColor3f(colors[CYAN].r, colors[CYAN].g, colors[CYAN].b);
+        break;
+    case 8:
+        glColor3f(colors[DARKCYAN].r, colors[DARKCYAN].g, colors[DARKCYAN].b);
+        break;
+    }
+    glRasterPos2i((x + 0) * TILE_SIZE + PADDING + 6, (y + 0) * TILE_SIZE + PADDING + 5);
+    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '0' + v);
+}
+//отрисовка рамки
+void drawFrame(float x, float y, float WIDTH, float HEIGHT, bool doubleFrame = true)
+{
+
+    glColor3f(colors[ULTRALIGHTGRAY].r, colors[ULTRALIGHTGRAY].g, colors[ULTRALIGHTGRAY].b);
+    glBegin(GL_LINE_LOOP);
+    {
+        glVertex2f((x + 0) + 0 * WIDTH, (y - 0) + 0 * HEIGHT);
+        glVertex2f((x - 0) + 0 * WIDTH, (y - 1) + 1 * HEIGHT);
+        glVertex2f((x - 1) + 1 * WIDTH, (y - 1) + 1 * HEIGHT);
+        glVertex2f((x - 2) + 1 * WIDTH, (y - 2) + 1 * HEIGHT);
+        glVertex2f((x + 1) + 0 * WIDTH, (y - 2) + 1 * HEIGHT);
+        glVertex2f((x + 1) + 0 * WIDTH, (y + 1) + 0 * HEIGHT);
+    }
+    glEnd();
+
+    glColor3f(colors[LIGHTGRAY].r, colors[LIGHTGRAY].g, colors[LIGHTGRAY].b);
+    glBegin(GL_LINE_LOOP);
+    {
+        glVertex2f((x - 2) + 1 * WIDTH, (y - 2) + 1 * HEIGHT);
+        glVertex2f((x - 2) + 1 * WIDTH, (y + 1) + 0 * HEIGHT);
+        glVertex2f((x + 1) + 0 * WIDTH, (y + 1) + 0 * HEIGHT);
+        glVertex2f((x - 0) + 0 * WIDTH, (y - 0) + 0 * HEIGHT);
+        glVertex2f((x - 1) + 1 * WIDTH, (y - 0) + 0 * HEIGHT);
+        glVertex2f((x - 1) + 1 * WIDTH, (y - 1) + 1 * HEIGHT);
+    }
+    glEnd();
+    if (!doubleFrame) return;
+    WIDTH = WIDTH - 2 * PADDING;
+    HEIGHT = HEIGHT - 2 * PADDING;
+    glBegin(GL_LINE_LOOP);
+    {
+        glVertex2f((x - 0 + PADDING) + 0 * WIDTH, (y + PADDING - 0) + 0 * HEIGHT);
+        glVertex2f((x - 0 + PADDING) + 0 * WIDTH, (y + PADDING - 1) + 1 * HEIGHT);
+        glVertex2f((x - 1 + PADDING) + 1 * WIDTH, (y + PADDING - 1) + 1 * HEIGHT);
+        glVertex2f((x - 2 + PADDING) + 1 * WIDTH, (y + PADDING - 2) + 1 * HEIGHT);
+        glVertex2f((x + 1 + PADDING) + 0 * WIDTH, (y + PADDING - 2) + 1 * HEIGHT);
+        glVertex2f((x + 1 + PADDING) + 0 * WIDTH, (y + PADDING + 1) + 0 * HEIGHT);
+    }
+    glEnd();
+    glColor3f(colors[WHITE].r, colors[WHITE].g, colors[WHITE].b);
+    glBegin(GL_LINE_LOOP);
+    {
+        glVertex2i((x + PADDING - 2) + 1 * WIDTH, (y + PADDING - 2) + 1 * HEIGHT);
+        glVertex2i((x + PADDING - 2) + 1 * WIDTH, (y + PADDING + 1) + 0 * HEIGHT);
+        glVertex2i((x + PADDING + 1) + 0 * WIDTH, (y + PADDING + 1) + 0 * HEIGHT);
+        glVertex2i((x + PADDING - 0) + 0 * WIDTH, (y + PADDING - 0) + 0 * HEIGHT);
+        glVertex2i((x + PADDING - 1) + 1 * WIDTH, (y + PADDING - 0) + 0 * HEIGHT);
+        glVertex2i((x + PADDING - 1) + 1 * WIDTH, (y + PADDING - 1) + 1 * HEIGHT);
+    }
+    glEnd();
+}
