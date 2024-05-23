@@ -268,3 +268,45 @@ void drawIcon(int x = 0, int y = 0)
     }
     glEnd();
 }
+int index(int x, int y)
+{
+    return x + (y * BOARD_SIZE);
+}
+
+bool isOpen(int x, int y)
+{
+    return board[index(x, y)].open;
+}
+
+//Возвращает тип ячейки с координатами (x, y) (пустая, мина и т. д.).
+int getType(int x, int y)
+{
+    return board[index(x, y)].type;
+}
+//Устанавливает тип ячейки с координатами (x, y) в значение v
+void setType(int x, int y, int v)
+{
+    board[index(x, y)].type = v;
+}
+
+bool isMine(int x, int y)
+{
+    if (x < 0 || y < 0 || x > BOARD_SIZE - 1 || y > BOARD_SIZE - 1)
+        return false;
+
+    if (getType(x, y) == MINE)
+        return true;
+    return false;
+}
+
+int calcMine(int x, int y)
+{
+    return isMine(x - 1, y - 1)
+        + isMine(x, y - 1)
+        + isMine(x + 1, y - 1)
+        + isMine(x - 1, y)
+        + isMine(x + 1, y)
+        + isMine(x - 1, y + 1)
+        + isMine(x, y + 1)
+        + isMine(x + 1, y + 1);
+}
